@@ -68,13 +68,12 @@ with col1:
         
         col_btn1, col_btn2 = st.columns([1, 4])
         with col_btn1:
-            submitted = st.form_submit_button("Analyze 🔍")
+            submitted = st.form_submit_button("Ask")
         with col_btn2:
             if submitted and text:
-                with st.spinner("🔄 Processing your request..."):
+                with st.spinner("Processing your request..."):
                     try:
                         result = run_graph(text)
-                        st.success("✨ Analysis Complete!")
                         st.markdown("### Results")
                         st.info(result)
                     except Exception as e:

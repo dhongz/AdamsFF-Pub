@@ -20,7 +20,7 @@ Call the Query tool to get the exploration plan:
 - "reasoning": Your rationale for this exploration.
 - "exploration_plan": A detailed step-by-step plan outlining how to explore the dataset to answer the question.
 
-If you have all the information you need and are ready to finalize your plan, simply return "Finish".
+If you have all the information you need and are ready to finalize your plan, respond with your answer.
 """
 
 initial_context = """

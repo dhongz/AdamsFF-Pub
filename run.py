@@ -87,9 +87,8 @@ with col2:
     examples = [
         "Who has the most wins?",
         "What's the highest scoring team?",
-        "Who has the best win percentage?",
+        "Give me an extensive storyline on the history of our league. Talk about interesting team timelines focusing on team points scores, margins of victory and playoff success. Don't forget to mention the lows as well."
         "Which team scores the most points on average?",
-        "Who had the biggest margin of victory?",
         "What's the average points per game across all teams?"
     ]
     

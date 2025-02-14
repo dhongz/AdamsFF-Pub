@@ -11,44 +11,44 @@ st.set_page_config(
 )
 
 # Add custom CSS with more sophisticated styling
-st.markdown("""
-    <style>
-    .stTitle {
-        font-size: 42px;
-        padding-bottom: 20px;
-        color: #1f4037;
-        text-align: center;
-    }
-    .stForm {
-        background-color: #f0f2f6;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .stTextArea {
-        border: 2px solid #1f4037;
-        border-radius: 5px;
-    }
-    .stButton button {
-        background-color: #1f4037;
-        color: white;
-        border-radius: 5px;
-        padding: 0.5rem 2rem;
-        transition: all 0.3s;
-    }
-    .stButton button:hover {
-        background-color: #2d5a4e;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-    .example-card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    </style>
-    """, unsafe_allow_html=True)
+# st.markdown("""
+#     <style>
+#     .stTitle {
+#         font-size: 42px;
+#         padding-bottom: 20px;
+#         color: #1f4037;
+#         text-align: center;
+#     }
+#     .stForm {
+#         background-color: #f0f2f6;
+#         padding: 20px;
+#         border-radius: 10px;
+#         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+#     }
+#     .stTextArea {
+#         border: 2px solid #1f4037;
+#         border-radius: 5px;
+#     }
+#     .stButton button {
+#         background-color: #1f4037;
+#         color: white;
+#         border-radius: 5px;
+#         padding: 0.5rem 2rem;
+#         transition: all 0.3s;
+#     }
+#     .stButton button:hover {
+#         background-color: #2d5a4e;
+#         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+#     }
+#     .example-card {
+#         background-color: white;
+#         padding: 20px;
+#         border-radius: 10px;
+#         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+#         margin-bottom: 20px;
+#     }
+#     </style>
+#     """, unsafe_allow_html=True)
 
 # Header section
 st.title("🏈 Adams Fantasy Football League")

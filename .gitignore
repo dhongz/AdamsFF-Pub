@@ -7,3 +7,6 @@
 .env.test
 
 .venv
+
+.streamlit/secrets.toml
+.streamlit/

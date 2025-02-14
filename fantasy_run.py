@@ -4,8 +4,6 @@ from scipy import stats
 from espn_api.football import League
 
 from lib.config import config
-from lib.team import FantasyTeam
-from lib.utils import reghomeWin, regawayWin, regTie, connorShare
 from dotenv import load_dotenv
 # #Private Info
 
@@ -26,26 +24,6 @@ swid = config.SWID
 
 
 
-
-
-#Initialize each fantasy team
-joey_dicresce = FantasyTeam("joey DiCresce")
-joel_fazecas = FantasyTeam("joel faze")
-cameron_limke = FantasyTeam("Cameron Limke")
-ben_urbano = FantasyTeam("Ben Urbano")
-dillon_hong = FantasyTeam("Dillon Hong")
-chris_jenkins = FantasyTeam("chris jenkins")
-jack_dunn = FantasyTeam("jack dunn")
-nick_durand = FantasyTeam("Nick Durand")
-brett_nixon = FantasyTeam("Brett Nixon")
-connor_hess = FantasyTeam("Connor Hess")
-marco_dicresce = FantasyTeam("Marco DiCresce")
-nabil_chamra = FantasyTeam("Nabil Chamra")
-jack_mooney = FantasyTeam("John Sneg")
-will_myers = FantasyTeam("Will Myers")
-carson_tuscany = FantasyTeam("Joanne Tuscany")
-
-team_list = np.array([joey_dicresce, joel_fazecas, cameron_limke, ben_urbano, dillon_hong, chris_jenkins, jack_dunn, nick_durand, brett_nixon, connor_hess, marco_dicresce, nabil_chamra, jack_mooney, will_myers, carson_tuscany])
 
 
 
@@ -349,27 +327,27 @@ team_list = np.array([joey_dicresce, joel_fazecas, cameron_limke, ben_urbano, di
 def create_fantasy_dataset(start_year=2014, end_year=2024):
     # Create owner ID to name mapping
     owner_id_mapping = {
-        '{ED2967D6-F92F-447A-A967-D6F92F147A25}': 'Chris Jenkins',
-        '{29D183EA-E761-43C0-93A4-6C47CA2926D7}': 'Chris Jenkins',
-        '{02AB2B26-BDB6-4013-AB2B-26BDB63013D0}': 'Ben Urbano',
-        '{0A038966-B1EC-4363-93A4-1A746D1C05AA}': 'Joey DiCresce',
-        '{120EBF0B-960F-4C32-8EBF-0B960FEC32D1}': 'Nick Durand',
-        '{1328661D-EEAA-4F68-A866-1DEEAA6F68CC}': 'Carson Tuscany',
-        '{8E76C98C-033D-48E5-8735-71752E421497}': 'Carson Tuscany',
-        '{207DC893-5A3A-4A1B-BDC8-935A3AAA1B0B}': 'Marco DiCresce',
-        '{ED7135CE-1C99-405A-B135-CE1C99E05A9F}': 'Will Myers',
-        '{4E3A897B-4C6E-4A17-BA89-7B4C6E1A1789}': 'Will Myers',
-        '{2615CE14-DE41-462C-A141-C106A137008F}': 'Will Myers',
-        '{3702423F-DDE1-4F68-B13D-4597B2FBDC9B}': 'Nabil Chamra',
-        '{45F320B7-A9EA-42AD-BEEA-AE97F33A55FE}': 'Connor Hess',
-        '{5B91BA7E-444A-403C-91BA-7E444AA03C4A}': 'Cameron Limke',
-        '{D96E6F84-EC60-4EA4-8672-B92B97A2C2FD}': 'Cameron Limke',
-        '{6248D1D4-C58C-4253-9C9B-D30AB9524116}': 'Brett Nixon',
-        '{CB8801B1-2DC9-47DB-9752-626600865D83}': 'Brett Nixon',
-        '{700F91F4-F9CD-4A3A-8F91-F4F9CDCA3AC2}': 'Joel Fazecas',
-        '{A928F5E8-8048-42E3-A4CE-63B009FB6A47}': 'Jack Dunn',
-        '{77FBFE61-CB95-4C17-BBFE-61CB953C17C0}': 'Dillon Hong',
-        '{EAAD1FEA-A6D1-4BBE-A09A-EC86EF223450}': 'Jack Mooney'
+        '{ED2967D6-F92F-447A-A967-D6F92F147A25}': 'Chris',
+        '{29D183EA-E761-43C0-93A4-6C47CA2926D7}': 'Chris',
+        '{02AB2B26-BDB6-4013-AB2B-26BDB63013D0}': 'Ben',
+        '{0A038966-B1EC-4363-93A4-1A746D1C05AA}': 'Joey',
+        '{120EBF0B-960F-4C32-8EBF-0B960FEC32D1}': 'Nick',
+        '{1328661D-EEAA-4F68-A866-1DEEAA6F68CC}': 'Carson',
+        '{8E76C98C-033D-48E5-8735-71752E421497}': 'Carson',
+        '{207DC893-5A3A-4A1B-BDC8-935A3AAA1B0B}': 'Marco',
+        '{ED7135CE-1C99-405A-B135-CE1C99E05A9F}': 'Will',
+        '{4E3A897B-4C6E-4A17-BA89-7B4C6E1A1789}': 'Will',
+        '{2615CE14-DE41-462C-A141-C106A137008F}': 'Will',
+        '{3702423F-DDE1-4F68-B13D-4597B2FBDC9B}': 'Nabil',
+        '{45F320B7-A9EA-42AD-BEEA-AE97F33A55FE}': 'Connor',
+        '{5B91BA7E-444A-403C-91BA-7E444AA03C4A}': 'Cameron',
+        '{D96E6F84-EC60-4EA4-8672-B92B97A2C2FD}': 'Cameron',
+        '{6248D1D4-C58C-4253-9C9B-D30AB9524116}': 'Brett',
+        '{CB8801B1-2DC9-47DB-9752-626600865D83}': 'Brett',
+        '{700F91F4-F9CD-4A3A-8F91-F4F9CDCA3AC2}': 'Joel',
+        '{A928F5E8-8048-42E3-A4CE-63B009FB6A47}': 'Jack',
+        '{77FBFE61-CB95-4C17-BBFE-61CB953C17C0}': 'Dillon',
+        '{EAAD1FEA-A6D1-4BBE-A09A-EC86EF223450}': 'JMooney'
     }
     
     all_matches = []
@@ -414,11 +392,11 @@ def create_fantasy_dataset(start_year=2014, end_year=2024):
                     'is_playoff': is_playoffs,
                     'is_championship': is_championship,
                     'home_team': match.home_team.team_name if hasattr(match, 'home_team') else None,
-                    'home_team_owner_ids': home_owners,
+                    # 'home_team_owner_ids': home_owners,
                     'home_team_owners': get_owner_names(home_owners),
                     'home_score': match.home_score,
                     'away_team': match.away_team.team_name if hasattr(match, 'away_team') else None,
-                    'away_team_owner_ids': away_owners,
+                    # 'away_team_owner_ids': away_owners,
                     'away_team_owners': get_owner_names(away_owners),
                     'away_score': match.away_score,
                     'winner': 'bye' if not hasattr(match, 'away_team') else ('home' if match.home_score > match.away_score else 'away' if match.away_score > match.home_score else 'tie'),

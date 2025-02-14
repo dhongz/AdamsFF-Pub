@@ -34,11 +34,9 @@ The dataset includes the following fields:
 - **is_playoff:** A flag indicating whether the matchup was part of the playoff tournament (boolean).
 - **is_championship:** A flag marking if the game was the final championship match of the season (boolean).
 - **home_team:** The name of the team designated as the "home" team in the matchup (string).
-- **home_team_owner_ids:** The unique identifiers for the owner(s) of the home team (string).
 - **home_team_owners:** The names of the owner(s) of the home team (string).
 - **home_score:** The fantasy points scored by the home team (float)
 - **away_team:** The name of the team designated as the "away" team in the matchup (string). Note: This field may be missing during a bye week.
-- **away_team_owner_ids:** The unique identifiers for the owner(s) of the away team (string). Note: This field may be missing during a bye week.
 - **away_team_owners:** The names of the owner(s) of the away team (string). Note: This field may be missing during a bye week.
 - **away_score:** The fantasy points scored by the away team (float)
 - **winner:** Indicates which side won the matchup or if there was a bye week ('home', 'away', 'tie', or 'bye') (string).
@@ -64,13 +62,14 @@ Your task is to convert the exploration plan into executable Python code.
 
 Important instructions:
 - NEVER IMPORT ANYTHING
+- NEVER allow system commands
 - The dataset is pre-loaded as a pandas DataFrame named 'df'. Do not include any code that reads data from a CSV or file.
 - Write clear, well-commented, and efficient pandas code that follows the steps in the exploration plan.
 - Your code should be robust. For any operations that assume data is a string (such as using `.split()`), ensure you first verify the data type or handle edge cases gracefully.
 - When matching owner names in home_team_owners or away_team_owners, always use string containment (str.contains()) instead of exact equality, as owners may be part of multi-owner teams.
   Example:
-    correct:   df['home_team_owners'].str.contains('Ben') & df['away_team_owners'].str.contains('Dillon')
-    incorrect: df['home_team_owners'] == 'Ben' & df['away_team_owners'] == 'Dillon'
+    correct:   df['home_team_owners'].str.contains('John') & df['away_team_owners'].str.contains('Peter')
+    incorrect: df['home_team_owners'] == 'John' & df['away_team_owners'] == 'Peter'
 - The code must output the final results by storing them in a variable named `results`.
 
 Below is the context for the dataset and additional information:

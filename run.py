@@ -63,7 +63,8 @@ with col1:
             "",
             placeholder="Example: Who has the most wins this season?",
             height=100,
-            key="query_input"
+            key="query_input",
+            label_visibility="visible"
         )
         
         col_btn1, col_btn2 = st.columns([1, 4])

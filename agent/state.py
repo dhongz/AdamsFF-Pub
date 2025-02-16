@@ -4,16 +4,18 @@ from pydantic import BaseModel, Field
 from datetime import datetime
 import pandas as pd
 from langchain_core.messages import (
-    AnyMessage
+    AnyMessage,
+    AIMessage
 )
 from langgraph.graph import add_messages, MessagesState
 
 
-class Query(BaseModel):
-    """
-    Represents an exploration query designed to extract insights from the fantasy football dataset.
-    """
+class Dataset(BaseModel):
+    """The dataset to be used to help answer the question"""
+    type: Literal["RegularSeason", "Playoff", "PlayerStats", "Matchups"]
 
+class QueryPlan(BaseModel):
+    """The query plan to be used to help answer the question"""
     question: str = Field(
         description=(
             "A clear and concise question that specifies the information or insight needed from the dataset. "
@@ -28,10 +30,11 @@ class Query(BaseModel):
     )
     exploration_plan: str = Field(
         description=(
-            "A step-by-step plan outlining how to explore the dataset using pandas to answer the question. "
+            "A step-by-step plan outlining how to explore the dataset using pandas to answer the question. Include specific fields, filters, values, and any other relevant information needed to answer the question."
             "Include specific operations, data transformations, and any edge case handling (e.g., data type checks) needed to ensure robustness."
         )
     )
+
 
 class Result(BaseModel):
     """The result of an exploration of the data set"""
@@ -39,18 +42,12 @@ class Result(BaseModel):
     code: str = Field(description="The code generated to answer the question")
     results: dict = Field(description="The results of the code execution")
 
-class Exploration(BaseModel):
-    """An exploration of the data set for more information"""
-
-    query: Query = Field(description="The query to the data set")
-    result: Result = Field(description="The result of the query")
-
-
 
 class DataAnalysisState(MessagesState):
     '''State for the data analysis agent'''
     dataframe: Optional[pd.DataFrame] = None
-    exploration: list[Exploration]
+    supervisor_message: AIMessage
+    context: str
     plan: str
     result: str
     

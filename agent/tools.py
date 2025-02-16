@@ -17,38 +17,29 @@ from langgraph.types import Command
 
 from .config import oai_mini, gemini
 from .state import (DataAnalysisState, 
-                    Exploration, 
-                    Query, 
-                    Result)
-from .prompts import exploration_prompt, initial_context, execute_exploration_prompt
+                    Dataset,
+                    QueryPlan)
+from .prompts import exploration_prompt, execute_exploration_prompt, regular_season_context, playoff_context, player_stats_context, matchups_context, query_planner_prompt
 
 logging.basicConfig(format="%(levelname)s - %(name)s -  %(message)s", level=logging.WARNING)
 logging.getLogger("nido").setLevel(logging.INFO)
 logger = logging.getLogger("nido")
 
 
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
 tools = []
-def initialize_data_set(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
-    """Initializes the data set for the analysis."""
-    # Get the directory containing the current script
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    # Go up one directory and locate the CSV file
-    csv_path = os.path.join(os.path.dirname(current_dir), 'fantasy_football_history.csv')
-    
-    state['dataframe'] = pd.read_csv(csv_path)
-    return state
 
 def explore_data_set(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
     """Explores the data set to get a better understanding of the data."""
     try:
     # Explore the data set
 
-        system_message = SystemMessage(content=exploration_prompt.format(initial_context=initial_context))
+        system_message = SystemMessage(content=exploration_prompt)
         updated_messages = [system_message] + state['messages']
 
-        response = gemini.bind_tools([Query], tool_choice="auto").invoke(updated_messages)
-        state['messages'] = add_messages(state['messages'], response)
+        response = gemini.bind_tools([Dataset]).invoke(updated_messages)
+        state['supervisor_message'] = response
         return state
     except Exception as e:
         logger.error(f"Error in explore_data_set: {str(e)}")
@@ -56,22 +47,101 @@ def explore_data_set(state: DataAnalysisState, config: RunnableConfig) -> DataAn
         state['messages'] = add_messages(state['messages'], ai_message)
         return Command(goto=END)
 
-def should_explore(state: DataAnalysisState, config: RunnableConfig) -> Command[Literal["execute_exploration", "plan_query", END]]:
+def should_explore(state: DataAnalysisState, config: RunnableConfig) -> Command[Literal["regular_season_exploration", "playoff_exploration", "player_stats_exploration", "matchups_exploration", "plan_query", END]]:
     """Determines if the data set should be explored further."""
     try:
-        message = state['messages'][-1]
+        message = state['supervisor_message']
 
         if len(message.tool_calls) == 0:
-            return Command(goto="plan_query")
+            state['messages'] = add_messages(state['messages'], message)
+            return Command(goto="plan_query", update={"messages": state['messages']})
+        
+        tool_call = message.tool_calls[0]
+        if tool_call['args']['type'] == "RegularSeason":
+            return Command(goto="regular_season_exploration")
+        elif tool_call['args']['type'] == "Playoff":
+            return Command(goto="playoff_exploration")
+        elif tool_call['args']['type'] == "PlayerStats":
+            return Command(goto="player_stats_exploration")
+        elif tool_call['args']['type'] == "Matchups":
+            return Command(goto="matchups_exploration")
         else:
-            if message.tool_calls[0]['name'] == "Query":
-                return Command(goto="execute_exploration")
-            else:
-                return Command(goto=END)
+            return Command(goto=END)
     except Exception as e:
-
         logger.error(f"Error in route_update: {str(e)}")
         return Command(goto=END)
+
+
+def regular_season_exploration(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
+    """Explores the regular season data set."""
+    try:
+        csv_path = os.path.join(os.path.dirname(current_dir), 'regular_season_totals.csv')
+        state['dataframe'] = pd.read_csv(csv_path)
+        state['context'] = regular_season_context
+        system_message = SystemMessage(content=query_planner_prompt.format(context=regular_season_context))
+        updated_messages = [system_message] + state['messages']
+        response = gemini.bind_tools([QueryPlan], tool_choice="any").invoke(updated_messages)
+        state['messages'] = add_messages(state['messages'], response)
+        return Command(goto="execute_exploration", update={"messages": state['messages'], "context": regular_season_context, "dataframe": state['dataframe']})
+    except Exception as e:
+        logger.error(f"Error in explore_data_set: {str(e)}")
+        ai_message = AIMessage(content=f"Error in explore_data_set: {str(e)}")
+        state['messages'] = add_messages(state['messages'], ai_message)
+        return Command(goto=END)
+
+def playoff_exploration(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
+    """Explores the playoff data set."""
+    try:
+        csv_path = os.path.join(os.path.dirname(current_dir), 'playoff_totals.csv')
+        state['dataframe'] = pd.read_csv(csv_path)
+        state['context'] = playoff_context
+        system_message = SystemMessage(content=query_planner_prompt.format(context=playoff_context))
+        updated_messages = [system_message] + state['messages']
+        response = gemini.bind_tools([QueryPlan], tool_choice="any").invoke(updated_messages)
+        state['messages'] = add_messages(state['messages'], response)
+        return Command(goto="execute_exploration", update={"messages": state['messages'], "context": playoff_context, "dataframe": state['dataframe']})
+    except Exception as e:
+        logger.error(f"Error in playoff_exploration: {str(e)}")
+        ai_message = AIMessage(content=f"Error in playoff_exploration: {str(e)}")
+        state['messages'] = add_messages(state['messages'], ai_message)
+        return Command(goto=END)    
+
+def player_stats_exploration(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
+    """Explores the player stats data set."""
+    try:
+        csv_path = os.path.join(os.path.dirname(current_dir), 'player_stats.csv')
+        state['dataframe'] = pd.read_csv(csv_path)
+        state['context'] = player_stats_context
+        system_message = SystemMessage(content=query_planner_prompt.format(context=player_stats_context))
+        updated_messages = [system_message] + state['messages']
+        response = gemini.bind_tools([QueryPlan], tool_choice="any").invoke(updated_messages)
+        state['messages'] = add_messages(state['messages'], response)
+        return Command(goto="execute_exploration", update={"messages": state['messages'], "context": player_stats_context, "dataframe": state['dataframe']})
+    except Exception as e:
+        logger.error(f"Error in player_stats_exploration: {str(e)}")
+        ai_message = AIMessage(content=f"Error in player_stats_exploration: {str(e)}")
+        state['messages'] = add_messages(state['messages'], ai_message)
+        return Command(goto=END)
+
+def matchups_exploration(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
+    """Explores the matchups data set."""
+    try:
+        csv_path = os.path.join(os.path.dirname(current_dir), 'matchups.csv')
+        state['dataframe'] = pd.read_csv(csv_path)
+        state['context'] = matchups_context
+        system_message = SystemMessage(content=query_planner_prompt.format(context=matchups_context))
+        updated_messages = [system_message] + state['messages']
+        response = gemini.bind_tools([QueryPlan], tool_choice="any").invoke(updated_messages)
+        state['messages'] = add_messages(state['messages'], response)
+        return Command(goto="execute_exploration", update={"messages": state['messages'], "context": matchups_context, "dataframe": state['dataframe']})
+    except Exception as e:
+        logger.error(f"Error in matchups_exploration: {str(e)}")
+        ai_message = AIMessage(content=f"Error in matchups_exploration: {str(e)}")
+        state['messages'] = add_messages(state['messages'], ai_message)
+        return Command(goto=END)
+
+
+
 
 
 def execute_exploration(state: DataAnalysisState, config: RunnableConfig) -> DataAnalysisState:
@@ -79,7 +149,7 @@ def execute_exploration(state: DataAnalysisState, config: RunnableConfig) -> Dat
     # try:
     tool_call = state['messages'][-1].tool_calls[0]
     query = tool_call['args']
-    system_message = SystemMessage(content=execute_exploration_prompt.format(context=initial_context))
+    system_message = SystemMessage(content=execute_exploration_prompt.format(context=state['context']))
     human_prompt = (
         """Please generate Python code that uses the existing pandas DataFrame named 'df'. 
         The code should be robust and handle potential data type issues gracefully. 

@@ -11,7 +11,7 @@ Background:
 
 
 ## Archive (used to do rankings but shifted to LLM Agent)
-## Fantasy Football Ranking for the Adams Fantasy Football League
+### Fantasy Football Ranking for the Adams Fantasy Football League
 
 
 Quick and dirty version of career rankings and performance.

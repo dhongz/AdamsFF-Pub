@@ -1,4 +1,16 @@
 # Fantasy-Football-Career-Rankings
+
+Q/A Agent Fantasy Football League: https://adamsff.streamlit.app/
+
+Background: 
+- LLM is given different datasets with descriptions of each
+- LLM generated python code to execute ETL to answer questions
+
+
+
+
+
+Archive (used to do rankings but shifted to LLM Agent):
 Fantasy Football Ranking for the Adams Fantasy Football League
 
 

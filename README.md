@@ -1,6 +1,6 @@
 # Fantasy-Football-Career-Rankings
 
-Q/A Agent Fantasy Football League: https://adamsff.streamlit.app/
+## Q/A Agent Fantasy Football League: https://adamsff.streamlit.app/
 
 Background: 
 - LLM is given different datasets with descriptions of each
@@ -10,8 +10,8 @@ Background:
 
 
 
-Archive (used to do rankings but shifted to LLM Agent):
-Fantasy Football Ranking for the Adams Fantasy Football League
+## Archive (used to do rankings but shifted to LLM Agent)
+## Fantasy Football Ranking for the Adams Fantasy Football League
 
 
 Quick and dirty version of career rankings and performance.
